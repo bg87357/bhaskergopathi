@@ -401,6 +401,60 @@
         </div>
     </div>
 
+    <!-- Staff Modal -->
+    <div id="staffModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="staffModalTitle">Add Staff</h2>
+                <span class="close" onclick="closeModal('staffModal')">&times;</span>
+            </div>
+            <form id="staffForm">
+                <input type="hidden" id="staffId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="staffName">Name *</label>
+                        <input type="text" id="staffName" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="staffEmail">Email *</label>
+                        <input type="email" id="staffEmail" required class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="staffRole">Role *</label>
+                        <select id="staffRole" required class="form-control">
+                            <option value="">Select Role</option>
+                            <option value="ADMIN">Admin</option>
+                            <option value="DOCTOR">Doctor</option>
+                            <option value="RECEPTIONIST">Receptionist</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPhone">Phone</label>
+                        <input type="tel" id="staffPhone" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="staffClinic">Clinic *</label>
+                        <select id="staffClinic" required class="form-control">
+                            <option value="">Select Clinic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffSpecialization">Specialization</label>
+                        <input type="text" id="staffSpecialization" class="form-control" placeholder="e.g., General Homeopathy">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('staffModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="js/app.js"></script>
 </body>
 </html>

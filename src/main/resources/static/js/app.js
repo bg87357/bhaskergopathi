@@ -46,6 +46,7 @@ function initializeEventListeners() {
     document.getElementById('patientForm').addEventListener('submit', handlePatientSubmit);
     document.getElementById('appointmentForm').addEventListener('submit', handleAppointmentSubmit);
     document.getElementById('clinicForm').addEventListener('submit', handleClinicSubmit);
+    document.getElementById('staffForm').addEventListener('submit', handleStaffSubmit);
 
     // Filters
     document.getElementById('clinicFilter').addEventListener('change', loadDashboardStats);
@@ -199,6 +200,12 @@ async function loadClinics() {
         }
         if (appointmentClinic) {
             appointmentClinic.innerHTML = '<option value="">Select Clinic</option>' + clinicOptions;
+        }
+        
+        // Update staff clinic dropdown
+        const staffClinic = document.getElementById('staffClinic');
+        if (staffClinic) {
+            staffClinic.innerHTML = '<option value="">Select Clinic</option>' + clinicOptions;
         }
     } catch (error) {
         console.error('Failed to load clinics:', error);
@@ -389,6 +396,83 @@ async function loadStaff() {
         `).join('');
     } catch (error) {
         console.error('Failed to load staff:', error);
+    }
+}
+
+// Staff modal and form functions
+function showStaffModal(staffId = null) {
+    if (staffId) {
+        loadStaffForEdit(staffId);
+        document.getElementById('staffModalTitle').textContent = 'Edit Staff';
+    } else {
+        document.getElementById('staffModalTitle').textContent = 'Add Staff';
+    }
+    showModal('staffModal');
+}
+
+async function editStaff(id) {
+    try {
+        const staff = await apiCall(`/staff/${id}`);
+        
+        document.getElementById('staffId').value = staff.id;
+        document.getElementById('staffName').value = staff.name;
+        document.getElementById('staffEmail').value = staff.email;
+        document.getElementById('staffRole').value = staff.role;
+        document.getElementById('staffPhone').value = staff.phoneNumber || '';
+        document.getElementById('staffSpecialization').value = staff.specialization || '';
+        document.getElementById('staffClinic').value = staff.clinic?.id || '';
+        
+        showStaffModal(id);
+    } catch (error) {
+        console.error('Failed to load staff for edit:', error);
+    }
+}
+
+async function deleteStaff(id) {
+    if (!confirm('Are you sure you want to delete this staff member?')) return;
+    
+    try {
+        await apiCall(`/staff/${id}`, { method: 'DELETE' });
+        showNotification('Staff member deleted successfully!', 'success');
+        loadStaff();
+    } catch (error) {
+        console.error('Failed to delete staff:', error);
+    }
+}
+
+async function handleStaffSubmit(e) {
+    e.preventDefault();
+    
+    const staffId = document.getElementById('staffId').value;
+    
+    const staffData = {
+        name: document.getElementById('staffName').value,
+        email: document.getElementById('staffEmail').value,
+        role: document.getElementById('staffRole').value,
+        phoneNumber: document.getElementById('staffPhone').value,
+        specialization: document.getElementById('staffSpecialization').value,
+        clinic: { id: parseInt(document.getElementById('staffClinic').value) }
+    };
+    
+    try {
+        if (staffId) {
+            await apiCall(`/staff/${staffId}`, {
+                method: 'PUT',
+                body: JSON.stringify(staffData)
+            });
+            showNotification('Staff member updated successfully!', 'success');
+        } else {
+            await apiCall('/staff', {
+                method: 'POST',
+                body: JSON.stringify(staffData)
+            });
+            showNotification('Staff member added successfully!', 'success');
+        }
+        
+        closeModal('staffModal');
+        loadStaff();
+    } catch (error) {
+        console.error('Failed to save staff:', error);
     }
 }
 
